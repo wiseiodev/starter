@@ -2,10 +2,11 @@ import NextAuth, { User } from 'next-auth';
 
 import { JWT } from 'next-auth/jwt';
 import authConfig from '@/auth.config';
+import { env } from '@/config/env.mjs';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // You can use this on Vercel to protect preview deployments
-  redirectProxyUrl: process.env.AUTH_REDIRECT_PROXY_URL,
+  redirectProxyUrl: env.AUTH_REDIRECT_PROXY_URL,
   ...authConfig,
   providers: [...authConfig.providers],
   callbacks: {

@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:clear": "tsx lib/db/functions/clear.ts",
+    "db:seed": "tsx lib/db/functions/seed.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
@@ -24,10 +28,14 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
+    "drizzle-zod": "^0.5.1",
     "lucide-react": "^0.446.0",
     "next": "14.2.13",
     "next-auth": "^5.0.0-beta.22",
     "next-themes": "^0.3.0",
+    "postgres": "^3.4.4",
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
@@ -40,10 +48,12 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "drizzle-kit": "^0.24.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.1",
     "typescript": "^5"
   }
 }
