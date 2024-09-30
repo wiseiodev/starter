@@ -5,19 +5,28 @@ import { appOptions, geistMono, geistSans } from '@/config/app-options';
 import { Footer } from '@/components/landing/footer';
 import { Header } from '@/components/landing/header';
 import type { Metadata } from 'next';
+import { SessionProvider } from '@/components/auth/session-provider';
+import { ThemeProvider } from '@/components/dark-mode/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
+import { auth } from '@/auth';
 
 export const metadata: Metadata = {
   title: `${appOptions.appName}`,
   description: 'Hit the ground running with this starter app.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
-    <html lang='en'>
+    <html
+      lang='en'
+      suppressHydrationWarning
+    >
       <head>
         <link
           rel='icon'
@@ -27,11 +36,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className='flex flex-col min-h-screen'>
-          <Header />
-          {children}
-          <Footer />
-        </div>
+        <SessionProvider session={session}>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className='flex flex-col min-h-screen'>
+              <Header />
+              {children}
+              <Footer />
+              <Toaster />
+            </div>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

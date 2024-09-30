@@ -1,4 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+'use client';
+
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,13 +8,41 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { signOut, useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 export function UserNav() {
+  const { data: session, status } = useSession();
+  const [userImage, setUserImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (session?.user?.image) {
+      setUserImage(session.user.image);
+    }
+  }, [session]);
+
+  if (status === 'loading') {
+    return (
+      <Button
+        variant='ghost'
+        size='icon'
+        className='relative h-8 w-8 rounded-full'
+      >
+        <Loader2 className='h-4 w-4 animate-spin' />
+      </Button>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return null; // Or render a sign-in button
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -21,12 +51,21 @@ export function UserNav() {
           className='relative h-8 w-8 rounded-full'
         >
           <Avatar className='h-8 w-8'>
-            <AvatarImage
-              src='/avatars/01.png'
-              alt='@shadcn'
-            />
-            <AvatarFallback>SC</AvatarFallback>
+            {userImage ? (
+              <div className='aspect-square h-full w-full'>
+                <Image
+                  src={userImage}
+                  alt={session?.user?.name ?? 'User avatar'}
+                  width={32}
+                  height={32}
+                  className='rounded-full object-cover'
+                />
+              </div>
+            ) : (
+              <AvatarFallback>{session?.user?.name?.[0] ?? 'U'}</AvatarFallback>
+            )}
           </Avatar>
+          <span className='sr-only'>Open user menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -36,32 +75,24 @@ export function UserNav() {
       >
         <DropdownMenuLabel className='font-normal'>
           <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>shadcn</p>
+            <p className='text-sm font-medium leading-none'>
+              {session?.user?.name}
+            </p>
             <p className='text-xs leading-none text-muted-foreground'>
-              m@example.com
+              {session?.user?.email}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => signOut({ redirectTo: '/' })}>
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

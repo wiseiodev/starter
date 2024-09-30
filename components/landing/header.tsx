@@ -1,8 +1,18 @@
+'use client';
+
+import { AuthButton } from '../auth/auth-button';
 import Link from 'next/link';
 import { Zap } from 'lucide-react';
 import { appOptions } from '@/config/app-options';
+import { usePathname } from 'next/navigation';
 
 export const Header = () => {
+  const pathname = usePathname();
+
+  if (pathname.includes('dashboard')) {
+    return null;
+  }
+
   return (
     <header className='px-4 lg:px-6 h-14 flex items-center justify-between'>
       <Link
@@ -23,6 +33,8 @@ export const Header = () => {
           </Link>
         ))}
       </nav>
+
+      <AuthButton />
     </header>
   );
 };
