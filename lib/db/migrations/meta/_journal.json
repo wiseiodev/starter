@@ -15,6 +15,13 @@
       "when": 1727708683110,
       "tag": "0001_moaning_ronan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1727742600790,
+      "tag": "0002_rainy_martin_li",
+      "breakpoints": true
     }
   ]
 }

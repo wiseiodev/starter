@@ -1,10 +1,15 @@
 import { pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 
+import { accounts } from './accounts';
 import { createInsertSchema } from 'drizzle-zod';
 import { relations } from 'drizzle-orm/relations';
+import { sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
-  id: text('id').primaryKey().notNull(),
+  id: text('id')
+    .primaryKey()
+    .notNull()
+    .default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
   emailVerified: timestamp('email_verified', {
     precision: 6,
@@ -21,7 +26,9 @@ export const users = pgTable('users', {
     .$onUpdate(() => new Date()),
 });
 
-export const userRelations = relations(users, () => ({}));
+export const userRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts),
+}));
 
 export const insertUserSchema = createInsertSchema(users).omit({
   created: true,

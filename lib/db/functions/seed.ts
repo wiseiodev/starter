@@ -10,7 +10,6 @@ async function main() {
   const [fakeUser] = await db
     .insert(users)
     .values({
-      id: 'abc123',
       email: 'fake@email.COM',
       name: 'Fake User',
     })

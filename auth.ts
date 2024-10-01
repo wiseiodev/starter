@@ -1,13 +1,20 @@
 import NextAuth, { User } from 'next-auth';
+import { accounts, users } from '@/lib/db/schema';
 
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { JWT } from 'next-auth/jwt';
 import authConfig from '@/auth.config';
+import { db } from '@/lib/db';
 import { env } from '@/config/env.mjs';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // You can use this on Vercel to protect preview deployments
   redirectProxyUrl: env.AUTH_REDIRECT_PROXY_URL,
   ...authConfig,
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+  }),
   providers: [...authConfig.providers],
   callbacks: {
     async jwt({ account, token, user }) {
@@ -72,6 +79,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.access_token = token.access_token;
       }
       return session;
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      if (!user.email) return;
+      // TODO - Use this to setup a new Team for the user, or any other "new user" setup tasks.
     },
   },
 });
