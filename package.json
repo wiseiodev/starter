@@ -1,6 +1,6 @@
 {
   "name": "starter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:clear": "tsx lib/db/functions/clear.ts",
-    "db:seed": "tsx lib/db/functions/seed.ts"
+    "db:seed": "tsx lib/db/functions/seed.ts",
+    "release": "commit-and-tag-version",
+    "release:minor": "commit-and-tag-version --release-as minor"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.5.3",
